@@ -16,16 +16,21 @@ class UsersController extends Controller
             'users' => $users,
         ]);
     }
-    public function show($id)
-  {
+    
+    //showアクション
+ public function show($id)
+    {
+        $user = User::find($id);
+        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
 
-     $user = User::find($id);
+        $data = [
+            'user' => $user,
+            'microposts' => $microposts,
+        ];
 
-     return view('users.show',[
-     'user' => $user,
-     ]);
+        $data += $this->counts($user);
 
-
- }
+        return view('users.show', $data);
+    }
     
 }
