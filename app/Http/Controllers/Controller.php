@@ -13,12 +13,16 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     
     
-    //countsメソッド（投稿数を表示）
-    public function counts($user) {
+    //countsメソッド（投稿数を表示）とフォロー、フォロワー数の表示
+ public function counts($user) {
         $count_microposts = $user->microposts()->count();
+        $count_followings = $user->followings()->count();
+        $count_followers = $user->followers()->count();
 
         return [
             'count_microposts' => $count_microposts,
+            'count_followings' => $count_followings,
+            'count_followers' => $count_followers,
         ];
     }
 }
