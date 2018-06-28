@@ -80,5 +80,15 @@ public function unfollow($userId)
 public function is_following($userId) {
     return $this->followings()->where('follow_id', $userId)->exists();
 }
+
+     //自分と自分がフォローしているユーザーの投稿を取得する
+ public function feed_microposts()
+    {
+        $follow_user_ids = $this->followings()-> pluck('users.id')->toArray();//あるユーザーがフォローしているユーザーのidを配列で取得
+        $follow_user_ids[] = $this->id;//自分のidも配列に加える
+        return Micropost::whereIn('user_id', $follow_user_ids);//自分と自分のフォローしたユーザーの投稿だけを返す
+    }
+
+
    }
    
