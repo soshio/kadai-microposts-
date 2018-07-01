@@ -1,0 +1,44 @@
+
+   //投稿をお気に入りする
+    public function favorite($micropostId)
+{
+    // 既にお気に入りしているかの確認
+    $exist = $this->is_favorite($micropostId);
+    // 自分の投稿ではないかの確認
+    $micropost = \App\Micropost::find($micropostId);
+    $its_mine = $this->id == $micropost->user_id;
+
+    if ($exist || $its_mine) {
+        // 既にお気に入りしていれば何もしない
+        return false;
+    } else {
+        // 未お気に入りであればお気に入りする
+        $this->favorite_microposts()->attach($micropostId);
+        return true;
+    }
+}
+
+    //お気に入りしている投稿からお気に入りを削除する
+public function unfavorite($micropostId)
+{
+    // 既にお気に入りしているかの確認
+    $exist = $this->is_favorite($micropostId);
+     // 自分の投稿ではないかの確認
+    $micropost = \App\Micropost::find($micropostId);
+    $its_mine = $this->id == $micropost->user_id;
+
+    if ($exist && !$its_mine) {
+        // 既にフォローしていればフォローを外す
+       $this->favorite_microposts()->detach($micropostId);
+        return true;
+    } else {
+        // 未フォローであれば何もしない
+        return false;
+    }
+}
+
+ // 既にお気に入りしているかを確認するためのメソッド
+public function is_favorite($micropostId) {
+    return $this->favorite_microposts()->where('micropost_id', $micropostId)->exists();
+    
+}
